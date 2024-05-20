@@ -1,5 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
+using Tournament_API.Extensions;
+using Tournament_Data.Data;
 
 namespace Tournament_API
 {
@@ -10,9 +12,9 @@ namespace Tournament_API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddDbContext<Data.TournamentContext>(options =>
+            builder.Services.AddDbContext<TournamentApiContext>(options =>
             options.UseSqlServer(builder.Configuration
-            .GetConnectionString("TournamentContext") ?? throw new InvalidOperationException("Connection string not found.")));
+            .GetConnectionString("TournamentApiContext") ?? throw new InvalidOperationException("Connection string not found.")));
 
             builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true)
             .AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
@@ -21,6 +23,8 @@ namespace Tournament_API
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+            app.SeedDataAsync();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

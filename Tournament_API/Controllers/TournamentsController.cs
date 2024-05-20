@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Tournament_API.Data;
+using Tournament_Data.Data;
 using Tournament_Core.Entities;
 
 namespace Tournament_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/tournaments")]
     [ApiController]
     public class TournamentsController : ControllerBase
     {
-        private readonly TournamentContext _context;
+        private readonly TournamentApiContext _context;
 
-        public TournamentsController(TournamentContext context)
+        public TournamentsController(TournamentApiContext context)
         {
             _context = context;
         }
