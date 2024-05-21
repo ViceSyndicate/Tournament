@@ -12,3 +12,7 @@ Content-Type: application/json
 }
 
 ###
+
+GET {{Tournament_API_HostAddress}}/api/tournaments/2
+
+###

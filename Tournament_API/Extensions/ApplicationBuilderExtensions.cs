@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+﻿using Microsoft.EntityFrameworkCore;
 using Tournament_Core.Entities;
 using Tournament_Data.Data;
 
@@ -14,22 +14,27 @@ namespace Tournament_API.Extensions
                 var context = serviceProvider.GetRequiredService<TournamentApiContext>();
 
                 var tournaments = GenerateTournaments();
-                //var games = GenerateGames();
                 await context.AddRangeAsync(tournaments);
-                /*
-                var savedTournaments = context.Tournament;
-                foreach (var tournament in savedTournaments) { 
-                    foreach (var game in games)
+                await context.SaveChangesAsync();
+
+                var savedTournaments = context.Tournament.ToListAsync();
+
+                List<Game> games = GenerateGames();
+
+                foreach (Tournament tournament in tournaments)
+                {
+                    foreach (Game game in games)
                     {
+                        // add FK TournamentId to the game.
                         game.TournamentId = tournament.Id;
                     }
+                    await context.AddRangeAsync(games);
                 }
-                await context.AddRangeAsync(games);
-                */
+                await context.SaveChangesAsync();
             }
         }
 
-        private static IEnumerable<Tournament> GenerateTournaments()
+        private static List<Tournament> GenerateTournaments()
         {
             var tournaments = new List<Tournament>();
             for (int i = 0; i < 5; i++)
@@ -42,14 +47,14 @@ namespace Tournament_API.Extensions
             return tournaments;
         }
 
-        private static IEnumerable<Game> GenerateGames()
+        private static List<Game> GenerateGames()
         {
             List<Game> games = new List<Game>();
 
             for (int j = 0; j < 3; j++)
             {
                 Game game = new Game();
-                game.Title = "Game Title" + j.ToString();
+                game.Title = "Game Title " + j.ToString();
                 game.Time = DateTime.Now;
                 games.Add(game);
             }
