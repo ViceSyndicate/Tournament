@@ -14,10 +14,9 @@ namespace Tournament_API.Extensions
                 var context = serviceProvider.GetRequiredService<TournamentApiContext>();
 
                 var tournaments = GenerateTournaments();
+                //var games = GenerateGames();
                 await context.AddRangeAsync(tournaments);
-
                 /*
-                var games = GenerateGames();
                 var savedTournaments = context.Tournament;
                 foreach (var tournament in savedTournaments) { 
                     foreach (var game in games)

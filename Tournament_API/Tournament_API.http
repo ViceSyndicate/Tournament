@@ -3,3 +3,12 @@
 GET {{Tournament_API_HostAddress}}/api/tournaments
 
 ###
+
+POST {{Tournament_API_HostAddress}}/api/tournaments
+Content-Type: application/json
+
+{
+  //Tournament
+}
+
+###
