@@ -13,23 +13,15 @@ namespace Tournament_API.Extensions
                 var serviceProvider = scope.ServiceProvider;
                 var context = serviceProvider.GetRequiredService<TournamentApiContext>();
 
-                var tournaments = GenerateTournaments();
-                await context.AddRangeAsync(tournaments);
-                await context.SaveChangesAsync();
-
-                var savedTournaments = context.Tournament.ToListAsync();
-
+                List<Tournament> tournaments = GenerateTournaments();
                 List<Game> games = GenerateGames();
 
-                foreach (Tournament tournament in tournaments)
+                for (int i = 0; i < tournaments.Count(); i++)
                 {
-                    foreach (Game game in games)
-                    {
-                        // add FK TournamentId to the game.
-                        game.TournamentId = tournament.Id;
-                    }
-                    await context.AddRangeAsync(games);
+                    // I think i am getting a pointer error here.
+                    tournaments[i].Games = games;
                 }
+                await context.AddRangeAsync(tournaments);
                 await context.SaveChangesAsync();
             }
         }
@@ -41,7 +33,7 @@ namespace Tournament_API.Extensions
             {
                 Tournament tournament = new Tournament();
                 tournament.Title = "Tournament Title " + i.ToString();
-                tournament.StartDate = DateTime.Now;
+                tournament.StartDate = GetRandomDateTime();
                 tournaments.Add(tournament);
             }
             return tournaments;
@@ -55,10 +47,34 @@ namespace Tournament_API.Extensions
             {
                 Game game = new Game();
                 game.Title = "Game Title " + j.ToString();
-                game.Time = DateTime.Now;
+                game.Time = GetRandomDateTime();
                 games.Add(game);
             }
             return games;
+        }
+        public static DateTime GetRandomDateTime()
+        {
+            // Define the start date and end date for the range
+            DateTime startDate = new DateTime(1900, 1, 1);
+            DateTime endDate = new DateTime(2100, 12, 31);
+
+            // Calculate the range of days
+            int range = (endDate - startDate).Days;
+
+            // Generate a random number of days within the range
+            Random random = new Random();
+            int randomDays = random.Next(range + 1);
+
+            // Add the random number of days to the start date
+            DateTime randomDate = startDate.AddDays(randomDays);
+
+            // Generate a random time component (hours, minutes, seconds)
+            int randomHours = random.Next(0, 24);
+            int randomMinutes = random.Next(0, 60);
+            int randomSeconds = random.Next(0, 60);
+
+            // Combine the random date and time
+            return randomDate.AddHours(randomHours).AddMinutes(randomMinutes).AddSeconds(randomSeconds);
         }
     }
 }

@@ -25,7 +25,13 @@ namespace Tournament_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Tournament>>> GetTournament()
         {
-            return await _context.Tournament.ToListAsync();
+            var tournaments = await _context.Tournament.ToListAsync();
+            
+            //foreach (var item in tournaments)
+            //{
+            //    item.Games = _context.Game.Where(x => x.TournamentId == item.Id).ToList();
+            //}
+            return tournaments;
         }
 
         // GET: api/Tournaments/5
