@@ -10,7 +10,7 @@ using Tournament_Data.Data;
 
 namespace Tournament_Data.Data.Repositories
 {
-    internal class GameRepository : IGameRepository
+    public class GameRepository : IGameRepository
     {
         private readonly TournamentApiContext _context;
         public GameRepository(TournamentApiContext context)
