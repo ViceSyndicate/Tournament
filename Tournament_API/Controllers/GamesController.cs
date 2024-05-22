@@ -8,10 +8,11 @@ using Tournament_Data.Data.Repositories;
 
 namespace Tournament_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/games")]
     [ApiController]
     public class GamesController : ControllerBase
     {
+
         private readonly TournamentApiContext _context;
         // REPLACE WITH IGameRepositoru
         IGameRepository repository;
@@ -24,7 +25,7 @@ namespace Tournament_API.Controllers
 
         // GET: api/Tournaments
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tournament>>> GetTournament()
+        public async Task<ActionResult<IEnumerable<Game>>> GetGame()
         {
             //var tournaments = await _context.Tournament.ToListAsync();
             var data = await repository.GetAllAsync();
@@ -33,58 +34,58 @@ namespace Tournament_API.Controllers
 
         // GET: api/Tournaments/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Tournament>> GetTournament(int id)
+        public async Task<ActionResult<Game>> GetGame(int id)
         {
-            var tournament = repository.GetAsync(id);
-            if (tournament == null)
+            var game = repository.GetAsync(id);
+            if (game == null)
             {
                 return NotFound();
             }
-            return await tournament;
+            return await game;
         }
 
         // PUT: api/Tournaments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTournament(int id, Tournament tournament)
+        public async Task<IActionResult> PutGame(int id, Game game)
         {
 
-            if (id != tournament.Id && !TournamentExists(id))
+            if (id != game.Id && !GameExists(id))
             {
                 return BadRequest();
             }
 
-            repository.Update(tournament);
+            repository.Update(game);
             return NoContent();
         }
 
         // POST: api/Tournaments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Tournament>> PostTournament(Tournament tournament)
+        public async Task<ActionResult<Game>> PostGame(Game game)
         {
-            repository.Add(tournament);
+            repository.Add(game);
             // Black Magic
-            return CreatedAtAction("GetTournament", new { id = tournament.Id }, tournament);
+            return CreatedAtAction("GetGame", new { id = game.Id }, game);
         }
 
         // DELETE: api/Tournaments/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTournament(int id)
+        public async Task<IActionResult> DeleteGame(int id)
         {
-            var tournament = await repository.GetAsync(id);
-            if (tournament == null)
+            var game = await repository.GetAsync(id);
+            if (game == null)
             {
                 return NotFound();
             }
             else
             {
-                repository.Remove(tournament);
+                repository.Remove(game);
                 return NoContent();
             }
         }
 
-        private bool TournamentExists(int id)
+        private bool GameExists(int id)
         {
             return repository.AnyAsync(id).Result;
         }

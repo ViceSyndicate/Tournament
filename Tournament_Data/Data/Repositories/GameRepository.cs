@@ -18,34 +18,45 @@ namespace Tournament_Data.Data.Repositories
             _context = context;
         }
 
-        public void Add(Game tournament)
+        public async void Add(Game game)
         {
-            throw new NotImplementedException();
+            _context.Game.Add(game);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<bool> AnyAsync(int id)
+        public async Task<bool> AnyAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Game.AnyAsync(e => e.Id == id);
         }
 
-        public Task<IEnumerable<Game>> GetAllAsync()
+        public async Task<IEnumerable<Game>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Game.ToListAsync();
         }
 
-        public Task<Game> GetAsync(int id)
+        public async Task<Game> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            var result = await _context.Game.FindAsync(id);
+            return result!;
         }
 
-        public void Remove(Game tournament)
+        public async void Remove(Game game)
         {
-            throw new NotImplementedException();
+            _context.Game.Remove(game);
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Game tournament)
+        public async void Update(Game game)
         {
-            throw new NotImplementedException();
+            _context.Entry(game).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
         }
     }
 }
