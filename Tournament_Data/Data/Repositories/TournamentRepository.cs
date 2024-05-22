@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ using Tournament_Data.Data;
 
 namespace Tournament_Core.Repositories
 {
-    internal class TournamentRepository : ITournamentRepository
+    public class TournamentRepository : ITournamentRepository
     {
         private readonly TournamentApiContext _context;
         public TournamentRepository(TournamentApiContext context)
@@ -26,9 +27,9 @@ namespace Tournament_Core.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Tournament>> GetAllAsync()
+        public async Task<IEnumerable<Tournament>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Tournament.ToListAsync();
         }
 
         public Task<Tournament> GetAsync(int id)

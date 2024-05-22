@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tournament_Data.Data;
 using Tournament_Core.Entities;
+using Tournament_Core.Repositories;
 
 namespace Tournament_API.Controllers
 {
@@ -15,23 +16,20 @@ namespace Tournament_API.Controllers
     public class TournamentsController : ControllerBase
     {
         private readonly TournamentApiContext _context;
-
+        ITournamentRepository repository;
         public TournamentsController(TournamentApiContext context)
         {
             _context = context;
+            repository = new TournamentRepository(context);
         }
 
         // GET: api/Tournaments
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Tournament>>> GetTournament()
         {
-            var tournaments = await _context.Tournament.ToListAsync();
-            
-            //foreach (var item in tournaments)
-            //{
-            //    item.Games = _context.Game.Where(x => x.TournamentId == item.Id).ToList();
-            //}
-            return tournaments;
+            //var tournaments = await _context.Tournament.ToListAsync();
+            var data = await repository.GetAllAsync();
+            return Ok(data);
         }
 
         // GET: api/Tournaments/5
@@ -110,5 +108,6 @@ namespace Tournament_API.Controllers
         {
             return _context.Tournament.Any(e => e.Id == id);
         }
+
     }
 }
