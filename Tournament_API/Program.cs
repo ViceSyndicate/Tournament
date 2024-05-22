@@ -16,6 +16,10 @@ namespace Tournament_API
             options.UseSqlServer(builder.Configuration
             .GetConnectionString("TournamentApiContext") ?? throw new InvalidOperationException("Connection string not found.")));
 
+            builder.Services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
             builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true)
             .AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

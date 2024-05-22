@@ -27,7 +27,6 @@ namespace Tournament_API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Tournament>>> GetTournament()
         {
-            //var tournaments = await _context.Tournament.ToListAsync();
             var data = await repository.GetAllAsync();
             return Ok(data);
         }

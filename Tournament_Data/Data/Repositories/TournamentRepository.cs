@@ -1,9 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tournament_Core.Entities;
 using Tournament_Data.Data;
 
@@ -30,12 +25,16 @@ namespace Tournament_Core.Repositories
 
         public async Task<IEnumerable<Tournament>> GetAllAsync()
         {
-            return await _context.Tournament.ToListAsync();
+            return await _context.Tournament
+                .Include(t => t.Games)
+                .ToListAsync();
         }
 
         public async Task<Tournament> GetAsync(int id)
         {
-            var result = await _context.Tournament.FindAsync(id);
+            var result = await _context.Tournament
+                .Include(t => t.Games)
+                .FirstOrDefaultAsync(t => t.Id == id);
             return result!;
         }
 
