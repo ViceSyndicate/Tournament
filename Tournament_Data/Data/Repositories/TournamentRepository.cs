@@ -17,15 +17,15 @@ namespace Tournament_Core.Repositories
             _context = context;
         }
 
-        public void Add(Tournament tournament)
+        public async void Add(Tournament tournament)
         {
             _context.Tournament.Add(tournament);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public Task<bool> AnyAsync(int id)
+        public async Task<bool> AnyAsync(int id)
         {
-            return _context.Tournament.AnyAsync(e => e.Id == id);
+            return await _context.Tournament.AnyAsync(e => e.Id == id);
         }
 
         public async Task<IEnumerable<Tournament>> GetAllAsync()
@@ -39,19 +39,19 @@ namespace Tournament_Core.Repositories
             return result!;
         }
 
-        public void Remove(Tournament tournament)
+        public async void Remove(Tournament tournament)
         {
             _context.Tournament.Remove(tournament);
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Tournament tournament)
+        public async void Update(Tournament tournament)
         {
 
             _context.Entry(tournament).State = EntityState.Modified;
             try
             {
-                _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
