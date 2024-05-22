@@ -49,7 +49,8 @@ namespace Tournament_API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTournament(int id, Tournament tournament)
         {
-            if (id != tournament.Id)
+
+            if (id != tournament.Id && !TournamentExists(id))
             {
                 return BadRequest();
             }
