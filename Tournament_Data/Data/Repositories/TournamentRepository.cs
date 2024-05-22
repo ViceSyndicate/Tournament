@@ -19,12 +19,13 @@ namespace Tournament_Core.Repositories
 
         public void Add(Tournament tournament)
         {
-            throw new NotImplementedException();
+            _context.Tournament.Add(tournament);
+            _context.SaveChanges();
         }
 
         public Task<bool> AnyAsync(int id)
         {
-            throw new NotImplementedException();
+            return _context.Tournament.AnyAsync(e => e.Id == id);
         }
 
         public async Task<IEnumerable<Tournament>> GetAllAsync()
@@ -32,19 +33,30 @@ namespace Tournament_Core.Repositories
             return await _context.Tournament.ToListAsync();
         }
 
-        public Task<Tournament> GetAsync(int id)
+        public async Task<Tournament> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            var result = await _context.Tournament.FindAsync(id);
+            return result!;
         }
 
         public void Remove(Tournament tournament)
         {
-            throw new NotImplementedException();
+            _context.Tournament.Remove(tournament);
+            _context.SaveChangesAsync();
         }
 
         public void Update(Tournament tournament)
         {
-            throw new NotImplementedException();
+
+            _context.Entry(tournament).State = EntityState.Modified;
+            try
+            {
+                _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
         }
     }
 }
