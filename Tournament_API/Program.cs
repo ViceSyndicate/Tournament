@@ -19,10 +19,12 @@ namespace Tournament_API
             .GetConnectionString("TournamentApiContext") ?? throw new InvalidOperationException("Connection string not found.")));
 
             builder.Services.AddScoped<IUoW, UoW>();
+            builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
+            builder.Services.AddScoped<IGameRepository, GameRepository>();
 
-            //builder.Services.AddControllers()
-            //    .AddNewtonsoftJson(options =>
-            //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            builder.Services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true)
             .AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();

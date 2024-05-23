@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Tournament_Data.Data;
 using Tournament_Core.Entities;
 using Tournament_Core.Repositories;
+using Tournament_Data.Data.Repositories;
 
 namespace Tournament_API.Controllers
 {
@@ -17,17 +18,20 @@ namespace Tournament_API.Controllers
     {
         private readonly TournamentApiContext _context;
         ITournamentRepository repository;
+        private readonly IUoW _UoW;
         public TournamentsController(TournamentApiContext context)
         {
             _context = context;
             repository = new TournamentRepository(context);
+            _UoW = new UoW(context);
         }
 
         // GET: api/Tournaments
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Tournament>>> GetTournament()
         {
-            var data = await repository.GetAllAsync();
+            //var data = await repository.GetAllAsync();
+            var data = await _UoW.TournamentRepository.GetAllAsync();
             return Ok(data);
         }
 
@@ -35,7 +39,7 @@ namespace Tournament_API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Tournament>> GetTournament(int id)
         {
-            var tournament = repository.GetAsync(id);
+            var tournament = _UoW.TournamentRepository.GetAsync(id);
             if (tournament == null)
             {
                 return NotFound();
@@ -54,7 +58,7 @@ namespace Tournament_API.Controllers
                 return BadRequest();
             }
 
-            repository.Update(tournament);
+            _UoW.TournamentRepository.Update(tournament);
             return NoContent();
         }
 
@@ -63,7 +67,7 @@ namespace Tournament_API.Controllers
         [HttpPost]
         public async Task<ActionResult<Tournament>> PostTournament(Tournament tournament)
         {
-            repository.Add(tournament);
+            _UoW.TournamentRepository.Add(tournament);
             // Black Magic
             return CreatedAtAction("GetTournament", new { id = tournament.Id }, tournament);
         }
@@ -72,21 +76,21 @@ namespace Tournament_API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTournament(int id)
         {
-            var tournament = await repository.GetAsync(id);
+            var tournament = await _UoW.TournamentRepository.GetAsync(id);
             if (tournament == null)
             {
                 return NotFound();
             }
             else
             {
-                repository.Remove(tournament);
+                _UoW.TournamentRepository.Remove(tournament);
                 return NoContent();
             }
         }
 
         private bool TournamentExists(int id)
         {
-            return repository.AnyAsync(id).Result;
+            return _UoW.TournamentRepository.AnyAsync(id).Result;
         }
     }
 }

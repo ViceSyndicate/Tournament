@@ -15,10 +15,12 @@ namespace Tournament_API.Controllers
 
         private readonly TournamentApiContext _context;
         IGameRepository repository;
+        private readonly IUoW _UoW;
         public GamesController(TournamentApiContext context)
         {
             _context = context;
             repository = new GameRepository(context);
+            _UoW = new UoW(context);
         }
 
         // GET: api/Tournaments
@@ -26,7 +28,7 @@ namespace Tournament_API.Controllers
         public async Task<ActionResult<IEnumerable<Game>>> GetGame()
         {
             //var tournaments = await _context.Tournament.ToListAsync();
-            var data = await repository.GetAllAsync();
+            var data = await _UoW.GameRepository.GetAllAsync();
             return Ok(data);
         }
 
@@ -34,7 +36,7 @@ namespace Tournament_API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Game>> GetGame(int id)
         {
-            var game = repository.GetAsync(id);
+            var game = _UoW.GameRepository.GetAsync(id);
             if (game == null)
             {
                 return NotFound();
@@ -53,7 +55,7 @@ namespace Tournament_API.Controllers
                 return BadRequest();
             }
 
-            repository.Update(game);
+            _UoW.GameRepository.Update(game);
             return NoContent();
         }
 
@@ -62,7 +64,7 @@ namespace Tournament_API.Controllers
         [HttpPost]
         public async Task<ActionResult<Game>> PostGame(Game game)
         {
-            repository.Add(game);
+            _UoW.GameRepository.Add(game);
             // Black Magic
             return CreatedAtAction("GetGame", new { id = game.Id }, game);
         }
@@ -71,21 +73,21 @@ namespace Tournament_API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGame(int id)
         {
-            var game = await repository.GetAsync(id);
+            var game = await _UoW.GameRepository.GetAsync(id);
             if (game == null)
             {
                 return NotFound();
             }
             else
             {
-                repository.Remove(game);
+                _UoW.GameRepository.Remove(game);
                 return NoContent();
             }
         }
 
         private bool GameExists(int id)
         {
-            return repository.AnyAsync(id).Result;
+            return _UoW.GameRepository.AnyAsync(id).Result;
         }
     }
 }

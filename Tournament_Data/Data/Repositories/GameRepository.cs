@@ -18,10 +18,26 @@ namespace Tournament_Data.Data.Repositories
             _context = context;
         }
 
+//        System.ObjectDisposedException: 'Cannot access a disposed context instance.
+//        A common cause of this error is disposing a context instance that was resolved from
+//        dependency injection and then later trying to use the same context instance elsewhere in your application.
+//        This may occur if you are calling 'Dispose' on the context instance, or wrapping it in a using statement.
+//        If you are using dependency injection, you should let the dependency injection container take care of disposing context instances.
+//        Object name: 'TournamentApiContext'.'
         public async void Add(Game game)
         {
-            _context.Game.Add(game);
-            await _context.SaveChangesAsync();
+            // This crashes if i try to supply an ID in the Post request.
+            // Also crashes if you put in the wrong tournamentId
+            try
+            {
+                _context.Game.Add(game);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            
         }
 
         public async Task<bool> AnyAsync(int id)
