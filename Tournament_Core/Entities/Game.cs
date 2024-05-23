@@ -17,6 +17,5 @@ namespace Tournament_Core.Entities
         public DateTime Time { get; set; }
         [ForeignKey("Tournament")]
         public int TournamentId { get; set; }
-        public Tournament Tournament { get; set; }
     }
 }

@@ -14,12 +14,10 @@ namespace Tournament_API.Controllers
     {
 
         private readonly TournamentApiContext _context;
-        // REPLACE WITH IGameRepositoru
         IGameRepository repository;
         public GamesController(TournamentApiContext context)
         {
             _context = context;
-            // REPLACE WITH GameRepositoru
             repository = new GameRepository(context);
         }
 
