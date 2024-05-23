@@ -1,12 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tournament_Core.Repositories;
-using Tournament_Data.Data.Repositories;
-using Tournament_Data.Data;
+﻿using Tournament_Core.Repositories;
 
 namespace Tournament_Data.Data.Repositories
 {

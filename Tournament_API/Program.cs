@@ -20,9 +20,9 @@ namespace Tournament_API
 
             builder.Services.AddScoped<IUoW, UoW>();
 
-            builder.Services.AddControllers()
-                .AddNewtonsoftJson(options =>
-                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            //builder.Services.AddControllers()
+            //    .AddNewtonsoftJson(options =>
+            //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true)
             .AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
