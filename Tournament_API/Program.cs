@@ -1,7 +1,9 @@
 
 using Microsoft.EntityFrameworkCore;
 using Tournament_API.Extensions;
+using Tournament_Core.Repositories;
 using Tournament_Data.Data;
+using Tournament_Data.Data.Repositories;
 
 namespace Tournament_API
 {
@@ -15,6 +17,8 @@ namespace Tournament_API
             builder.Services.AddDbContext<TournamentApiContext>(options =>
             options.UseSqlServer(builder.Configuration
             .GetConnectionString("TournamentApiContext") ?? throw new InvalidOperationException("Connection string not found.")));
+
+            builder.Services.AddScoped<IUoW, UoW>();
 
             builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
