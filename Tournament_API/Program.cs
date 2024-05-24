@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Tournament_API.Extensions;
 using Tournament_Core.Repositories;
 using Tournament_Data.Data;
@@ -28,7 +29,12 @@ namespace Tournament_API
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
-            builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true)
+            builder.Services.AddControllers(
+                opt =>
+                {
+                    opt.ReturnHttpNotAcceptable = true;
+                    //opt.InputFormatters.Insert(0, MyJPIF.GetJsonPatchInputFormatter());
+                })
             .AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

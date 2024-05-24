@@ -11,6 +11,8 @@ using Tournament_Core.Repositories;
 using Tournament_Data.Data.Repositories;
 using AutoMapper;
 using Tournament_Core.Dto;
+using Azure;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace Tournament_API.Controllers
 {
@@ -63,6 +65,26 @@ namespace Tournament_API.Controllers
             }
 
             _UoW.TournamentRepository.Update(tournament);
+            return NoContent();
+        }
+
+
+        [HttpPatch("{tournamentId}")]
+        public async Task<ActionResult> PatchTournament(int tournamentId, JsonPatchDocument<TournamentUpdateDto> patchDocument)
+        {
+            if (!TournamentExists(tournamentId).Result)
+            {
+                return NotFound();
+            }
+
+            var tournament = await repository.GetAsync(tournamentId);
+            TournamentUpdateDto tournamentUpdateDto = mapper.Map<TournamentUpdateDto>(tournament);
+
+            patchDocument.ApplyTo(tournamentUpdateDto, ModelState);
+
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!TryValidateModel(tournamentUpdateDto)) return BadRequest(ModelState);
+
             return NoContent();
         }
 
