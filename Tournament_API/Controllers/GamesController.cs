@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tournament_Core.Dto;
 using Tournament_Core.Entities;
 using Tournament_Core.Repositories;
@@ -54,7 +55,7 @@ namespace Tournament_API.Controllers
         public async Task<IActionResult> PutGame(int id, Game game)
         {
 
-            if (id != game.Id && !GameExists(id))
+            if (id != game.Id && !GameExists(id).Result)
             {
                 return BadRequest();
             }
@@ -68,7 +69,7 @@ namespace Tournament_API.Controllers
         [HttpPost]
         public async Task<ActionResult<Game>> PostGame(GameDto gameDto)
         {
-            var tournamentExists = _context.Tournament.Where(x => x.Id == gameDto.TournamentId).Any();
+            var tournamentExists = await _context.Tournament.Where(x => x.Id == gameDto.TournamentId).AnyAsync();
             if (!tournamentExists)
             {
                 return BadRequest();
@@ -95,13 +96,13 @@ namespace Tournament_API.Controllers
             }
         }
 
-        private bool GameExists(int id)
+        private Task<bool> GameExists(int id)
         {
-            return _UoW.GameRepository.AnyAsync(id).Result;
+            return _UoW.GameRepository.AnyAsync(id);
         }
-        private bool TournamentExists(int id)
+        private Task<bool> TournamentExists(int id)
         {
-            return _UoW.TournamentRepository.AnyAsync(id).Result;
+            return _UoW.TournamentRepository.AnyAsync(id);
         }
     }
 }

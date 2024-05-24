@@ -57,7 +57,7 @@ namespace Tournament_API.Controllers
         public async Task<IActionResult> PutTournament(int id, Tournament tournament)
         {
 
-            if (id != tournament.Id && !TournamentExists(id))
+            if (id != tournament.Id && !TournamentExists(id).Result)
             {
                 return BadRequest();
             }
@@ -93,9 +93,9 @@ namespace Tournament_API.Controllers
             }
         }
 
-        private bool TournamentExists(int id)
+        private Task<bool> TournamentExists(int id)
         {
-            return _UoW.TournamentRepository.AnyAsync(id).Result;
+            return _UoW.TournamentRepository.AnyAsync(id);
         }
     }
 }
