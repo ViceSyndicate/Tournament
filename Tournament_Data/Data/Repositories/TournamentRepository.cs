@@ -12,10 +12,10 @@ namespace Tournament_Core.Repositories
             _context = context;
         }
 
-        public async void Add(Tournament tournament)
+        public void Add(Tournament tournament)
         {
             _context.Tournament.Add(tournament);
-            await _context.SaveChangesAsync();
+            _context.SaveChangesAsync();
         }
 
         public async Task<bool> AnyAsync(int id)

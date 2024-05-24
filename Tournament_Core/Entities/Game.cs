@@ -17,5 +17,15 @@ namespace Tournament_Core.Entities
         public DateTime Time { get; set; }
         [ForeignKey("Tournament")]
         public int TournamentId { get; set; }
+        public Game(string title, DateTime startDate, int tournamentId)
+        {
+            Title = title;
+            Time = startDate;
+            TournamentId = tournamentId;
+        }
+        public Game()
+        {
+            
+        }
     }
 }

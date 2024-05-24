@@ -22,6 +22,8 @@ namespace Tournament_API
             builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
             builder.Services.AddScoped<IGameRepository, GameRepository>();
 
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);

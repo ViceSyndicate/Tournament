@@ -15,5 +15,14 @@ namespace Tournament_Core.Entities
         public string Title { get; set; }
         public DateTime StartDate { get; set; }
         public ICollection<Game> Games { get; set; } = new List<Game>();
+        public Tournament(string title, DateTime startDate)
+        {
+            Title = title;
+            StartDate = startDate;
+        }
+        public Tournament()
+        {
+            
+        }
     }
 }

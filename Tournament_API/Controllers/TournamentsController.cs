@@ -9,6 +9,8 @@ using Tournament_Data.Data;
 using Tournament_Core.Entities;
 using Tournament_Core.Repositories;
 using Tournament_Data.Data.Repositories;
+using AutoMapper;
+using Tournament_Core.Dto;
 
 namespace Tournament_API.Controllers
 {
@@ -17,11 +19,13 @@ namespace Tournament_API.Controllers
     public class TournamentsController : ControllerBase
     {
         private readonly TournamentApiContext _context;
+        private readonly IMapper mapper;
         ITournamentRepository repository;
         private readonly IUoW _UoW;
-        public TournamentsController(TournamentApiContext context)
+        public TournamentsController(TournamentApiContext context, IMapper mapper)
         {
             _context = context;
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             repository = new TournamentRepository(context);
             _UoW = new UoW(context);
         }
@@ -32,19 +36,19 @@ namespace Tournament_API.Controllers
         {
             //var data = await repository.GetAllAsync();
             var data = await _UoW.TournamentRepository.GetAllAsync();
-            return Ok(data);
+            return Ok(mapper.Map<IEnumerable<TournamentDto>>(data));
         }
 
         // GET: api/Tournaments/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Tournament>> GetTournament(int id)
         {
-            var tournament = _UoW.TournamentRepository.GetAsync(id);
+            var tournament = await _UoW.TournamentRepository.GetAsync(id);
             if (tournament == null)
             {
                 return NotFound();
             }
-            return await tournament;
+            return Ok(mapper.Map<TournamentDto>(tournament));
         }
 
         // PUT: api/Tournaments/5
@@ -65,8 +69,9 @@ namespace Tournament_API.Controllers
         // POST: api/Tournaments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Tournament>> PostTournament(Tournament tournament)
+        public async Task<ActionResult<Tournament>> PostTournament(TournamentDto tournamentDto)
         {
+            var tournament = new Tournament(tournamentDto.Title, tournamentDto.StartDate);
             _UoW.TournamentRepository.Add(tournament);
             // Black Magic
             return CreatedAtAction("GetTournament", new { id = tournament.Id }, tournament);

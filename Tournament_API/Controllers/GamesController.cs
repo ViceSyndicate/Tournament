@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Tournament_Core.Dto;
 using Tournament_Core.Entities;
 using Tournament_Core.Repositories;
 using Tournament_Data.Data;
@@ -14,11 +16,13 @@ namespace Tournament_API.Controllers
     {
 
         private readonly TournamentApiContext _context;
+        private readonly IMapper mapper;
         IGameRepository repository;
         private readonly IUoW _UoW;
-        public GamesController(TournamentApiContext context)
+        public GamesController(TournamentApiContext context, IMapper mapper)
         {
             _context = context;
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             repository = new GameRepository(context);
             _UoW = new UoW(context);
         }
@@ -29,19 +33,19 @@ namespace Tournament_API.Controllers
         {
             //var tournaments = await _context.Tournament.ToListAsync();
             var data = await _UoW.GameRepository.GetAllAsync();
-            return Ok(data);
+            return Ok(mapper.Map<IEnumerable<GameDto>>(data));
         }
 
         // GET: api/Tournaments/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Game>> GetGame(int id)
         {
-            var game = _UoW.GameRepository.GetAsync(id);
+            var game = await _UoW.GameRepository.GetAsync(id);
             if (game == null)
             {
                 return NotFound();
             }
-            return await game;
+            return Ok(mapper.Map<GameDto>(game));
         }
 
         // PUT: api/Tournaments/5
@@ -62,8 +66,14 @@ namespace Tournament_API.Controllers
         // POST: api/Tournaments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Game>> PostGame(Game game)
+        public async Task<ActionResult<Game>> PostGame(GameDto gameDto)
         {
+            var tournamentExists = _context.Tournament.Where(x => x.Id == gameDto.TournamentId).Any();
+            if (!tournamentExists)
+            {
+                return BadRequest();
+            }
+            var game = new Game(gameDto.Title, gameDto.StartDate, gameDto.TournamentId);
             _UoW.GameRepository.Add(game);
             // Black Magic
             return CreatedAtAction("GetGame", new { id = game.Id }, game);
@@ -88,6 +98,10 @@ namespace Tournament_API.Controllers
         private bool GameExists(int id)
         {
             return _UoW.GameRepository.AnyAsync(id).Result;
+        }
+        private bool TournamentExists(int id)
+        {
+            return _UoW.TournamentRepository.AnyAsync(id).Result;
         }
     }
 }

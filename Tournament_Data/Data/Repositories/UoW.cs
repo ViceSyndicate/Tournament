@@ -31,9 +31,6 @@ namespace Tournament_Data.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        Task IUoW.CompleteAsync()
-        {
-            throw new NotImplementedException();
-        }
+        //Task IUoW.CompleteAsync() => await _context.SaveChangesAsync();
     }
 }
