@@ -34,11 +34,21 @@ namespace Tournament_API.Controllers
 
         // GET: api/Tournaments
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tournament>>> GetTournament()
+        public async Task<ActionResult<IEnumerable<Tournament>>> GetTournament(bool includeGames)
         {
-            //var data = await repository.GetAllAsync();
             var data = await _UoW.TournamentRepository.GetAllAsync();
-            return Ok(mapper.Map<IEnumerable<TournamentDto>>(data));
+            if (includeGames)
+            {
+                return Ok(mapper.Map<IEnumerable<TournamentDto>>(data));
+            }
+            else
+            {
+                foreach (var tournament in data)
+                {
+                    tournament.Games = null;
+                }
+                return Ok(mapper.Map<IEnumerable<TournamentDto>>(data));
+            }
         }
 
         // GET: api/Tournaments/5
@@ -69,15 +79,15 @@ namespace Tournament_API.Controllers
         }
 
 
-        [HttpPatch("{tournamentId}")]
-        public async Task<ActionResult> PatchTournament(int tournamentId, JsonPatchDocument<TournamentUpdateDto> patchDocument)
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<TournamentUpdateDto>> PatchTournament(int id, JsonPatchDocument<TournamentUpdateDto> patchDocument)
         {
-            if (!TournamentExists(tournamentId).Result)
+            if (!TournamentExists(id).Result)
             {
                 return NotFound();
             }
 
-            var tournament = await repository.GetAsync(tournamentId);
+            var tournament = await repository.GetAsync(id);
             TournamentUpdateDto tournamentUpdateDto = mapper.Map<TournamentUpdateDto>(tournament);
 
             patchDocument.ApplyTo(tournamentUpdateDto, ModelState);
