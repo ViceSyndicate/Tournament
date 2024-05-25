@@ -34,7 +34,7 @@ namespace Tournament_API.Controllers
 
         // GET: api/Tournaments
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tournament>>> GetTournament(bool includeGames)
+        public async Task<ActionResult<IEnumerable<Tournament>>> GetTournament([FromQuery] bool includeGames = true)
         {
             var data = await _UoW.TournamentRepository.GetAllAsync();
             if (includeGames)
