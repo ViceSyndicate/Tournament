@@ -38,19 +38,19 @@ namespace Tournament_Core.Repositories
             return result!;
         }
 
-        public async void Remove(Tournament tournament)
+        public void Remove(Tournament tournament)
         {
             _context.Tournament.Remove(tournament);
-            await _context.SaveChangesAsync();
+            _context.SaveChangesAsync();
         }
 
-        public async void Update(Tournament tournament)
+        public void Update(Tournament tournament)
         {
 
             _context.Entry(tournament).State = EntityState.Modified;
             try
             {
-                await _context.SaveChangesAsync();
+                _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {

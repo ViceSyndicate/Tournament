@@ -80,7 +80,7 @@ namespace Tournament_API.Controllers
 
 
         [HttpPatch("{id}")]
-        public async Task<ActionResult<TournamentUpdateDto>> PatchTournament(int id, JsonPatchDocument<TournamentUpdateDto> patchDocument)
+        public async Task<ActionResult<TournamentUpdateDto>> PatchTournament(int id, JsonPatchDocument<Tournament> patchDocument)
         {
             if (!TournamentExists(id).Result)
             {
@@ -88,14 +88,13 @@ namespace Tournament_API.Controllers
             }
 
             var tournament = await repository.GetAsync(id);
-            TournamentUpdateDto tournamentUpdateDto = mapper.Map<TournamentUpdateDto>(tournament);
 
-            patchDocument.ApplyTo(tournamentUpdateDto, ModelState);
-
+            patchDocument.ApplyTo(tournament, ModelState);
+            
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            if (!TryValidateModel(tournamentUpdateDto)) return BadRequest(ModelState);
-
-            return NoContent();
+            if (!TryValidateModel(tournament)) return BadRequest(ModelState);
+            _UoW.TournamentRepository.Update(tournament);
+            return Ok(tournament);
         }
 
         // POST: api/Tournaments
