@@ -42,6 +42,12 @@ namespace Tournament_Data.Data.Repositories
             return await _context.Game.ToListAsync();
         }
 
+        public async Task<IEnumerable<Game>> GetAsync(string title)
+        {
+            var result = await _context.Game.Where(x => x.Title == title).ToListAsync();
+            return result;
+        }
+
         public async Task<Game> GetAsync(int id)
         {
             var result = await _context.Game.FindAsync(id);

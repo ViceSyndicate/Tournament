@@ -6,6 +6,7 @@ using Tournament_Core.Entities;
 using Tournament_Core.Repositories;
 using Tournament_Data.Data;
 using Tournament_Data.Data.Repositories;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -38,15 +39,27 @@ namespace Tournament_API.Controllers
         }
 
         // GET: api/Tournaments/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Game>> GetGame(int id)
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Game>> GetGame(int id)
+        //{
+        //    var game = await _UoW.GameRepository.GetAsync(id);
+        //    if (game == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return Ok(mapper.Map<GameDto>(game));
+        //}
+
+        // GET: api/Tournaments/5
+        [HttpGet("{title}")]
+        public async Task<ActionResult<Game>> GetGame(string title)
         {
-            var game = await _UoW.GameRepository.GetAsync(id);
-            if (game == null)
+            var data = await _UoW.GameRepository.GetAsync(title);
+            if (data == null)
             {
                 return NotFound();
             }
-            return Ok(mapper.Map<GameDto>(game));
+            return Ok(mapper.Map<IEnumerable<GameDto>>(data));
         }
 
         // PUT: api/Tournaments/5
@@ -72,7 +85,7 @@ namespace Tournament_API.Controllers
             var tournamentExists = await _context.Tournament.Where(x => x.Id == gameDto.TournamentId).AnyAsync();
             if (!tournamentExists)
             {
-                return BadRequest();
+                return BadRequest("No Tournament with that ID was found.");
             }
             var game = new Game(gameDto.Title, gameDto.StartDate, gameDto.TournamentId);
             _UoW.GameRepository.Add(game);

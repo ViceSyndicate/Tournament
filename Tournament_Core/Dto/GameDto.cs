@@ -15,9 +15,9 @@ namespace Tournament_Core.Dto
         {
             
         }
-        public GameDto(string title, DateTime startDate, int tournamentId) {
+        public GameDto(string title, DateTime time, int tournamentId) {
             Title = title;
-            StartDate = startDate;
+            StartDate = time;
             TournamentId = tournamentId;
         }
     }
