@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Identity;
+
 using Tournament_API.Extensions;
 using Tournament_Core.Repositories;
 using Tournament_Data.Data;
@@ -18,6 +19,13 @@ namespace Tournament_API
             builder.Services.AddDbContext<TournamentApiContext>(options =>
             options.UseSqlServer(builder.Configuration
             .GetConnectionString("TournamentApiContext") ?? throw new InvalidOperationException("Connection string not found.")));
+
+            // +
+            //var connectionString = builder.Configuration.GetConnectionString("TournamentApiContext");
+            //builder.Services.AddDbContext<TournamentApiContext>(options => options.UseSqlServer(connectionString));
+            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<TournamentApiContext>();
+
 
             builder.Services.AddScoped<IUoW, UoW>();
             builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
@@ -52,7 +60,8 @@ namespace Tournament_API
             }
 
             app.UseHttpsRedirection();
-
+            // +
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
